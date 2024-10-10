@@ -6,11 +6,17 @@ const initialItems = [
 ];
 
 export default function App() {
+  const [items, setItems] = useState([]);
+
+  function handleAddItems(item) {
+    setItems((currItems) => [...currItems, item]);
+  }
+
   return (
     <div>
       <Logo />
-      <Form />
-      <PackingList />
+      <Form onAddItems={handleAddItems} />
+      <PackingList items={items} />
       <Stats />
     </div>
   );
@@ -20,7 +26,7 @@ function Logo() {
   return <h1>🌴 Far Away 🛞</h1>;
 }
 
-function Form() {
+function Form({ onAddItems }) {
   const selectorArray = Array.from({ length: 20 }, (_, i) => i + 1);
   const [description, setDescription] = useState('');
   const [amount, setAmount] = useState(1);
@@ -32,6 +38,8 @@ function Form() {
 
     const newItem = { description, amount, packed: false, id: crypto.randomUUID() };
     console.log(newItem);
+
+    onAddItems(newItem);
 
     setDescription('');
     setAmount(1);
@@ -67,11 +75,11 @@ function Form() {
   );
 }
 
-function PackingList() {
+function PackingList({ items }) {
   return (
     <div className="list">
       <ul>
-        {initialItems.map((item) => (
+        {items.map((item) => (
           <Item item={item} key={item.id} />
         ))}
       </ul>
